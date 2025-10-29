@@ -1,0 +1,113 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  Static website hosting using Amazon S3 and CloudFront with Origin Access Control (OAC).
+
+Parameters:
+  BucketName:
+    Type: String
+    Description: Unique name for the S3 bucket (must be globally unique).
+  DefaultRootObject:
+    Type: String
+    Default: index.html
+    Description: The default root object for the CloudFront distribution.
+
+Resources:
+  # 1. Create S3 bucket
+  WebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      VersioningConfiguration:
+        Status: Suspended
+    DeletionPolicy: Delete
+
+  # 2. Create Origin Access Control (OAC) for CloudFront
+  WebsiteOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub "OAC-for-${BucketName}"
+        Description: Origin Access Control for CloudFront to access S3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+        OriginAccessControlOriginType: s3
+
+  # 3. Create CloudFront Distribution
+  WebsiteDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: !Sub "CloudFront distribution for ${BucketName} website"
+        DefaultRootObject: !Ref DefaultRootObject
+        Restrictions:
+          GeoRestriction:
+            RestrictionType: whitelist
+            Locations:
+              - US
+              - CA
+              - PE
+        Origins:
+          - Id: S3Origin
+            DomainName: !GetAtt WebsiteBucket.RegionalDomainName
+            S3OriginConfig: {}
+            OriginAccessControlId: !Ref WebsiteOAC
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # Managed-CachingOptimized
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+        HttpVersion: http2
+        IPV6Enabled: true
+
+  # 4. Add Bucket Policy to allow CloudFront access
+  WebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebsiteBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowCloudFrontServicePrincipal
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub "${WebsiteBucket.Arn}/*"
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${WebsiteDistribution}"
+
+Outputs:
+  BucketName:
+    Description: Name of the created S3 bucket.
+    Value: !Ref WebsiteBucket
+
+  BucketWebsiteURL:
+    Description: Regional S3 URL (not a static website URL since we're using OAC).
+    Value: !GetAtt WebsiteBucket.RegionalDomainName
+
+  CloudFrontDomainName:
+    Description: The CloudFront distribution domain name.
+    Value: !GetAtt WebsiteDistribution.DomainName
+
+  CloudFrontDistributionId:
+    Description: The CloudFront distribution ID.
+    Value: !Ref WebsiteDistribution

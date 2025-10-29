@@ -1,0 +1,250 @@
+/* ATS (Applicant Tracking Systems) Optimized Professional Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 10.5pt;
+    line-height: 1.5;
+    color: #000000;
+    background-color: #ffffff;
+    padding: 20px;
+}
+
+.cv-container {
+    max-width: 8.5in;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 0.4in;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* header */
+.cv-header {
+    text-align: center;
+    border-bottom: 1px solid #000000;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.cv-header h1 {
+    font-size: 20pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.cv-header h2 {
+    font-size: 14pt;
+    font-weight: normal;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+.contact-info {
+    font-size: 10pt;
+    margin: 5px 0;
+}
+
+.contact-info span {
+    margin: 0 5px;
+}
+
+.separator {
+    color: #666666;
+}
+
+/* sections */
+.cv-section {
+    margin-bottom: 15px;
+}
+
+.section-title {
+    font-size: 12pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 1px solid #000000;
+    padding-bottom: 3px;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.text-justify {
+    text-align: justify;
+    margin-bottom: 10px;
+}
+
+/* experience */
+.experience-item {
+    margin-bottom: 15px;
+    page-break-inside: avoid;
+}
+
+.experience-header {
+    margin-bottom: 5px;
+}
+
+.job-title {
+    font-weight: bold;
+    font-size: 11pt;
+}
+
+.company-info {
+    font-style: italic;
+    margin-bottom: 3px;
+}
+
+.experience-item ul {
+    margin-left: 25px;
+    margin-top: 5px;
+}
+
+.experience-item ul li {
+    margin-bottom: 4px;
+    text-align: justify;
+}
+
+/* education */
+.education-item {
+    margin-bottom: 12px;
+    page-break-inside: avoid;
+}
+
+.degree-title {
+    font-weight: bold;
+    font-size: 11pt;
+}
+
+.institution-info {
+    font-style: italic;
+    margin-bottom: 3px;
+}
+
+.additional-info {
+    margin-top: 3px;
+}
+
+/* skills */
+.skills-grid {
+    margin-bottom: 10px;
+}
+
+.skill-category {
+    margin-bottom: 8px;
+}
+
+.skill-category-name {
+    font-weight: bold;
+    display: inline;
+}
+
+.skill-category-name::after {
+    content: ": ";
+}
+
+.skill-items {
+    display: inline;
+}
+
+/* projects */
+.project-item {
+    margin-bottom: 12px;
+    page-break-inside: avoid;
+}
+
+.project-name {
+    font-weight: bold;
+    font-size: 11pt;
+}
+
+.project-description {
+    margin: 3px 0;
+}
+
+.project-tech {
+    font-style: italic;
+    font-size: 10pt;
+    color: #333333;
+}
+
+/* simple lists */
+.simple-list {
+    list-style-type: disc;
+    margin-left: 25px;
+}
+
+.simple-list li {
+    margin-bottom: 4px;
+}
+
+/* languages */
+.languages-grid {
+    display: flex;
+    gap: 20px;
+}
+
+.language-item {
+    flex: 1;
+}
+
+.language-name {
+    font-weight: bold;
+}
+
+.language-level {
+    font-style: italic;
+}
+
+/* print */
+@media print {
+    body {
+        padding: 0;
+        background-color: #ffffff;
+    }
+    
+    .cv-container {
+        box-shadow: none;
+        padding: 0.5in;
+        max-width: 100%;
+    }
+    
+    .cv-section {
+        page-break-inside: avoid;
+    }
+    
+    .experience-item,
+    .education-item,
+    .project-item {
+        page-break-inside: avoid;
+    }
+}
+
+/* responsive */
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .cv-container {
+        padding: 20px;
+    }
+    
+    .contact-info span {
+        display: block;
+        margin: 3px 0;
+    }
+    
+    .separator {
+        display: none;
+    }
+    
+    .languages-grid {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
