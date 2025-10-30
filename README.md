@@ -110,7 +110,34 @@ https://d123abc4def567.cloudfront.net
 - Traffic allowed **only** through OAC
 - **HTTPS enforced**
 - **AWS WAF** filters malicious traffic
-- **Geo-restriction** limits eligible countries
+- **Geo-restriction** limits eligible countries: US, CA, PE
+
+### Automatically created S3 bucket policy
+
+The CloudFormation stack creates and attaches an S3 bucket policy to restrict access to the bucket so only the CloudFront distribution (via Origin Access Control) can read objects. Keep this policy here for reference only.
+
+Example auto-created bucket policy:
+
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "AllowCloudFrontServicePrincipal",
+          "Effect": "Allow",
+          "Principal": {
+            "Service": "cloudfront.amazonaws.com"
+          },
+          "Action": "s3:GetObject",
+          "Resource": "arn:aws:s3:::<YOUR_BUCKET_NAME>/*",
+          "Condition": {
+            "StringEquals": {
+              "AWS:SourceArn": "arn:aws:cloudfront::<YOUR_AWS_ACCOUNT_ID>:distribution/<YOUR_DISTRIBUTION_ID>"
+            }
+          }
+        }
+      ]
+    }
+
 
 ## 📊 Observability
 
@@ -120,6 +147,10 @@ The architecture integrates with **Amazon CloudWatch**:
 - Request counts
 - Cache hit ratios
 - Error rates
+
+<p align="center">
+  <img src="assets/metrics.jpeg" alt="Metrics Diagram">
+</p>
 
 ## 🌎 Price Class Optimization
 
@@ -147,11 +178,14 @@ This reduces cost while serving North America efficiently.
 
 ## 🎯 Learning Objectives
 
-With this project, I practiced:
-
 ✅ Infrastructure as Code (CloudFormation)
+
 ✅ Secure static hosting patterns
+
 ✅ CDN caching and compression
+
 ✅ Origin Access Control (OAC)
+
 ✅ Edge security with WAF
+
 ✅ Observability with CloudWatch
