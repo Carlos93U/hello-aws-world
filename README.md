@@ -87,6 +87,7 @@ Deployment takes ~5 minutes.
 aws s3 cp index.html s3://<your-bucket-name>/
 aws s3 cp styles.css s3://<your-bucket-name>/
 aws s3 cp script.js s3://<your-bucket-name>/
+aws s3 cp config.js s3://<your-bucket-name>/
 ```
 
 ### 3. Get the CloudFront URL
